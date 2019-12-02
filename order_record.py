@@ -3,10 +3,6 @@ import operator
 
 class OrderRecord:
     RACES = ['AL', 'HO']
-    G2G_FEE = 0
-    PAYPAL_FEE = 0
-    WITHDRAW_FEE = 0
-    DOLLAR_EXCHANGE = 0
 
     def __init__(self):
         self.realm_name = ""
@@ -22,14 +18,16 @@ class OrderRecord:
     def set_alliance(self, value: bool):
         self.race = OrderRecord.RACES[0] if value else OrderRecord.RACES[1]
 
-    def calculate_price_toman(self, interest_rate: int):
+    def calculate_price_toman(self, interest_rate: int, g2g_fee, paypal_fee, withdraw_fee, dollar_exchange: int,
+                              price_per: int):
         self.price_toman = \
-            (self.server_price * 1000 *
-             (100 - OrderRecord.G2G_FEE) / 100 *
-             (100 - OrderRecord.PAYPAL_FEE) / 100 - OrderRecord.WITHDRAW_FEE) * \
-            OrderRecord.DOLLAR_EXCHANGE * \
-            (100 - interest_rate) / 100 \
-            / 1000
+            ((self.server_price * 1000000 *
+              (100 - g2g_fee) / 100 *
+              (100 - paypal_fee) / 100 - withdraw_fee) *
+             (100 - interest_rate) / 100 *
+             dollar_exchange / 1000000
+             ) * price_per
+
         return self.price_toman
 
     def __gt__(self, other):
@@ -40,7 +38,7 @@ class OrderRecord:
               .format(self.realm_name.ljust(big_width),
                       self.race.ljust(small_width),
                       str(self.gold_stock).ljust(medium_width),
-                      str(self.server_price).ljust(medium_width),
+                      str(format(self.server_price, ".6f")).ljust(medium_width),
                       str(format(self.price_toman, ",.0f")).ljust(medium_width),
                       ('*' if self.is_my_account else '').ljust(small_width)))
 
@@ -64,6 +62,7 @@ class OrderRecord:
             rec.print_order(big_width, medium_width, small_width)
 
     @staticmethod
-    def calculate_orders_price(wow_record_list: list, interest_rate: int):
+    def calculate_orders_price(wow_record_list: list, interest_rate: int, g2g_fee, paypal_fee, withdraw_fee,
+                               dollar_exchange, price_per):
         for rec in wow_record_list:
-            rec.calculate_price_toman(interest_rate)
+            rec.calculate_price_toman(interest_rate, g2g_fee, paypal_fee, withdraw_fee, dollar_exchange, price_per)

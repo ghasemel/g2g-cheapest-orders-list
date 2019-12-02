@@ -1,8 +1,8 @@
 from wow_fetch import WowFetch
 
 
-class WowClassic(WowFetch):
-    __WOW_CLASSIC_REALM = [
+class WowClassicFetch(WowFetch):
+    __WOW_REALM = [
         'Classic - Ashbringer',
         'Classic - Bloodfang',
         'Classic - Dragonfang',
@@ -38,4 +38,4 @@ class WowClassic(WowFetch):
         return 1087
 
     def get_realms_name(self):
-        return WowClassic.__WOW_CLASSIC_REALM
+        return WowClassicFetch.__WOW_REALM
