@@ -1,24 +1,28 @@
+import operator
 import urllib.request
 from bs4 import BeautifulSoup as Bs
 
 # change here
 from pip._vendor.distlib.compat import raw_input
 
-DOLLAR_EXCHANGE = 12550
-EURO_EXCHANGE = 13750
+from order_record import OrderRecord
 
+# exchange rates
+DOLLAR_EXCHANGE = 12550
+
+# fees
 G2G_FEE = 9.99
 PAYPAL_FEE = 3.99
 WITHDRAW_FEE = 0.99
-EURO_DOLLAR = 1.10109923
+
 
 REALM_URL_TEMPLATE = "https://www.g2g.com/wow-eu/gold-2522-19248?server={}&faction={}&sorting=price@asc"
 ALLIANCE_ID = 1086
 HORDE_ID = 1087
 RACES_ID = [ALLIANCE_ID, HORDE_ID]
-RACES = ['AL', 'HO']
-DOLLAR = '$'
-EURO = '€'
+
+USER_ACCOUNT = 'gigold'
+
 DESIRED_REALM = [
     'Classic - Ashbringer',
     'Classic - Bloodfang',
@@ -40,60 +44,62 @@ DESIRED_REALM = [
 ]
 
 
-def fetch_cheapest_price(realm_id, race_id):
+def fetch_order_info(realm_id, race_id):
     realm_url = REALM_URL_TEMPLATE.format(realm_id, race_id)
-    html = urllib.request.urlopen(realm_url)
+
+    opener = urllib.request.build_opener()
+
+    # cookie to have currencies in dollar
+    opener.addheaders.append(('Cookie', 'g2g_regional=%7B%22currency%22%3A%22USD%22%2C%22language%22%3A%22en%22%7D'))
+    html = opener.open(realm_url)
     soup = Bs(html, features="html.parser")
-    cheapest_price_tag = soup.findAll("span", {"class": "products__exch-rate"}, limit=1)
 
-    if cheapest_price_tag is None:
-        return DOLLAR, 0
-    cheapest_price_tag = cheapest_price_tag[0]
+    # price
+    tag = soup.findAll("span", {"class": "products__exch-rate"}, limit=1)
+    if tag is None:
+        return 0
+    tag = tag[0]
+    value = str(tag.text).strip().replace(" ", "").replace('1Gold=', '').strip()
+    cheapest_price = float(value.replace('US$', ''))
 
-    value = str(cheapest_price_tag.text).strip().replace(" ", "").replace('1Gold=', '').strip()
+    # stock - total gold
+    tag = soup.findAll("span", {"class": "products__statistic-amount"}, limit=1)
+    if tag is None:
+        return 0
+    tag = tag[0]
+    value = str(tag.text).strip().replace(" ", "").replace('Gold', '').strip()
+    gold_stock = value
 
-    curr = DOLLAR
-    if value.find('EUR'):
-        curr = EURO
+    # is seller my account
+    tag = soup.findAll("a", {"class": "seller__name"}, limit=1)
+    if tag is None:
+        return 0
+    tag = tag[0]
+    value = str(tag.text).strip().replace(" ", "").strip()
+    my_account = value == USER_ACCOUNT
 
-    cheapest_price = float(value.replace('EUR', ''))
-
-    return curr, cheapest_price
-
-
-def calculate_sell_price(currency, price, interest_rate):
-    # =(I2*1000*(100 - g2g_fee)/100*(100-paypal)/100-withdraw)*exchange_rate*(100-interest_fee)/100/1000
-    if currency == EURO:
-        price = price * EURO_DOLLAR
-
-    return (price * 1000 * (100 - G2G_FEE) / 100 * (100 - PAYPAL_FEE) / 100 - WITHDRAW_FEE) * DOLLAR_EXCHANGE * (
-                100 - interest_rate) / 100 / 1000
+    return cheapest_price, gold_stock, my_account
 
 
-def print_table(currency, realms, realms_price, interest_rate):
-    print("Realm".ljust(max_width) + "Race\tPrice($)\tBuy(Toman)")
-    j = 0
-    for i in range(len(realms_price)):
-        sell_price = calculate_sell_price(currency, realms_price[i], interest_rate)
-        print("{}{}\t{}\t{}".format(realms[j].ljust(max_width), RACES[i % 2], realms_price[i], format(sell_price, ",.0f")))
-
-        if i % 2 == 1:
-            j += 1
-# end
+def fetch_realms_info():
+    html = urllib.request.urlopen("https://www.g2g.com/wow-eu/gold-2522-19248")
+    soup = Bs(html, features="html.parser")
+    servers_id = [str(o['value']) for o in soup.find(id='server').find_all('option')]
+    realms = [str(o.text) for o in soup.find(id='server').find_all('option')]
+    return servers_id, realms
 
 
 if __name__ == "__main__":
-    Html = urllib.request.urlopen("https://www.g2g.com/wow-eu/gold-2522-19248")
-    Soup = Bs(Html, features="html.parser")
-    servers_id = [str(o['value']) for o in Soup.find(id='server').find_all('option')]
-    Realms = [str(o.text) for o in Soup.find(id='server').find_all('option')]
 
-    max_width = max(len(rl) for rl in Realms)
+    OrderRecord.G2G_FEE = G2G_FEE
+    OrderRecord.PAYPAL_FEE = PAYPAL_FEE
+    OrderRecord.WITHDRAW_FEE = WITHDRAW_FEE
+    OrderRecord.DOLLAR_EXCHANGE = DOLLAR_EXCHANGE
 
-    Currency = ''
-    Realms_Price = []
-    for index in range(len(servers_id)):
-        realmId = servers_id[index]
+    Servers_id, Realms = fetch_realms_info()
+    OrderList = list()
+    for index in range(len(Servers_id)):
+        realmId = Servers_id[index]
 
         if realmId.lower() == 'all':
             continue
@@ -103,17 +109,32 @@ if __name__ == "__main__":
 
         print(Realms[index] + ',', end='')
         for raceId in RACES_ID:
-            Currency, server_price = fetch_cheapest_price(realmId, raceId)
-            Realms_Price.append(server_price)
+            order_record = OrderRecord()
+            order_record.realm_name = Realms[index]
+
+            Cheapest_price, Gold_stock, My_account = fetch_order_info(realmId, raceId)
+
+            order_record.server_price = Cheapest_price
+            order_record.gold_stock = Gold_stock
+            order_record.is_my_account = My_account
+            order_record.set_alliance(raceId == ALLIANCE_ID)
+
+            OrderList.append(order_record)
+        # end for
     # end for
 
     print("")
     while True:
-        rate = raw_input("Interest Rate %: ")
+        rate = raw_input("Enter Interest Rate % (q): ")
         if rate == 'q':
             break
 
-        print_table(Currency, DESIRED_REALM, Realms_Price, int(rate))
+        if rate == '':
+            continue
+
+        OrderRecord.calculate_orders_price(OrderList, int(rate))
+        OrderList.sort()
+        OrderRecord.print_orders(OrderList)
     # end loop
 
 # end if
