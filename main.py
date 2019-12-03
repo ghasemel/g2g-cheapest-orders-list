@@ -32,8 +32,8 @@ def start():
     wow_classic = WowClassicFetch()
     wow_classic_orders = wow_classic.fetch_orders()
 
-    wow_norm = WowNormalFetch()
-    wow_norm_orders = wow_norm.fetch_orders()
+    #wow_norm = WowNormalFetch()
+    #wow_norm_orders = wow_norm.fetch_orders()
 
     print("\n===================================")
     while True:
@@ -49,8 +49,8 @@ def start():
         calculate_price_list(wow_classic_orders, interest_rate, dollar_exchange_rate, 1)
         print_list(wow_classic_orders)
 
-        calculate_price_list(wow_norm_orders, interest_rate, dollar_exchange_rate, 1000000)
-        print_list(wow_norm_orders)
+        #calculate_price_list(wow_norm_orders, interest_rate, dollar_exchange_rate, 1000000)
+        #print_list(wow_norm_orders)
 
     # end loop
 

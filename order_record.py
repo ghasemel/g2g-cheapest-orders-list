@@ -21,11 +21,11 @@ class OrderRecord:
     def calculate_price_toman(self, interest_rate: int, g2g_fee, paypal_fee, withdraw_fee, dollar_exchange: int,
                               price_per: int):
         self.price_toman = \
-            ((self.server_price * 1000000 *
+            ((self.server_price * 1000 *
               (100 - g2g_fee) / 100 *
               (100 - paypal_fee) / 100 - withdraw_fee) *
              (100 - interest_rate) / 100 *
-             dollar_exchange / 1000000
+             dollar_exchange / 1000
              ) * price_per
 
         return self.price_toman
@@ -34,7 +34,7 @@ class OrderRecord:
         return self.price_toman < other.price_toman
 
     def print_order(self, big_width, medium_width, small_width):
-        print("{}{}{}{}{}{}"
+        print("{};{};{};{};{};{}"
               .format(self.realm_name.ljust(big_width),
                       self.race.ljust(small_width),
                       str(self.gold_stock).ljust(medium_width),
@@ -45,11 +45,11 @@ class OrderRecord:
     @staticmethod
     def __print_order_titles(big_width, medium_width, small_width):
         print("Realm".ljust(big_width) +
-              "Race".ljust(small_width) +
-              "Gold Stock".ljust(medium_width) +
-              "Price($)".ljust(medium_width) +
-              "Buy(Toman)".ljust(medium_width) +
-              "My".ljust(small_width))
+              ";Race".ljust(small_width) +
+              ";Gold Stock".ljust(medium_width) +
+              ";Price($)".ljust(medium_width) +
+              ";Buy(Toman)".ljust(medium_width) +
+              ";My".ljust(small_width))
 
     @staticmethod
     def print_orders(wow_record_list: list):
