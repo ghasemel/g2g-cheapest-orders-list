@@ -37,7 +37,7 @@ class OrderRecord:
         print("{};{};{};{};{};{}"
               .format(self.realm_name.ljust(big_width),
                       self.race.ljust(small_width),
-                      str(self.gold_stock).ljust(medium_width),
+                      str(format(self.gold_stock, ",.0f")).ljust(medium_width),
                       str(format(self.server_price, ".6f")).ljust(medium_width),
                       str(format(self.price_toman, ",.0f")).ljust(medium_width),
                       ('*' if self.is_my_account else '').ljust(small_width)))

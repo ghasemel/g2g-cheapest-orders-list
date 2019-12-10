@@ -1,12 +1,13 @@
 import urllib.request
 from abc import ABC
-
 from bs4 import BeautifulSoup as Bs
-
 from order_record import OrderRecord
 
 
 class WowFetch(ABC):
+
+    MAX_FETCH = 20
+    MIN_GOLD_STOCK = 1000
 
     def get_servers_url(self):
         pass
@@ -65,28 +66,37 @@ class WowFetch(ABC):
     # end
 
     def __process_order_info(self, soup):
+        desired_index = -1
+
+        gold_stock = 0
+
+        # stock - total gold
+        tag = soup.findAll("span", {"class": "products__statistic-amount"}, limit=WowFetch.MAX_FETCH)
+        for t in range(len(tag)):
+            value = str(tag[t].text).strip().replace(" ", "").replace('Gold', '').strip().replace(',', '')
+            gold_stock = float(value)
+            if gold_stock >= WowFetch.MIN_GOLD_STOCK or t == WowFetch.MAX_FETCH - 1:
+                desired_index = t
+                break
+
+        if desired_index < 0:
+            return 0, 0, 0
 
         # price
-        tag = soup.findAll("span", {"class": "products__exch-rate"}, limit=1)
+        tag = soup.findAll("span", {"class": "products__exch-rate"}, limit=WowFetch.MAX_FETCH)
         if tag is None:
             return 0
-        tag = tag[0]
+
+        tag = tag[desired_index]
         value = str(tag.text).strip().replace(" ", "").replace('1Gold=', '').strip()
         cheapest_price = float(value.replace('US$', ''))
 
-        # stock - total gold
-        tag = soup.findAll("span", {"class": "products__statistic-amount"}, limit=1)
-        if tag is None:
-            return 0
-        tag = tag[0]
-        value = str(tag.text).strip().replace(" ", "").replace('Gold', '').strip()
-        gold_stock = value
-
         # is seller my account
-        tag = soup.findAll("a", {"class": "seller__name"}, limit=1)
+        tag = soup.findAll("a", {"class": "seller__name"}, limit=WowFetch.MAX_FETCH)
         if tag is None:
             return 0
-        tag = tag[0]
+
+        tag = tag[desired_index]
         value = str(tag.text).strip().replace(" ", "").strip()
         my_account = value == self.get_my_account()
 
