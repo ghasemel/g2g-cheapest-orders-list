@@ -7,7 +7,7 @@ from order_record import OrderRecord
 class WowFetch(ABC):
 
     MAX_FETCH = 20
-    MIN_GOLD_STOCK = 1000
+    MIN_GOLD_STOCK = 300
 
     def get_servers_url(self):
         pass
