@@ -1,12 +1,12 @@
 # change here
 from pip._vendor.distlib.compat import raw_input
-from order_record import OrderRecord
+from calculate_price import OrderRecord
 
 # fees
 from wow_classic_fetch import WowClassicFetch
 from wow_normal_fetch import WowNormalFetch
 
-G2G_FEE = 9.99
+G2G_FEE = 8.99
 PAYPAL_FEE = 3.99
 WITHDRAW_FEE = 0.99
 
@@ -29,11 +29,8 @@ def print_list(order_list: list):
 
 
 def start():
-    wow_classic = WowClassicFetch()
-    wow_classic_orders = wow_classic.fetch_orders()
-
-    #wow_norm = WowNormalFetch()
-    #wow_norm_orders = wow_norm.fetch_orders()
+    wow_norm = WowNormalFetch()
+    wow_norm_orders = wow_norm.fetch_orders()
 
     print("\n===================================")
     while True:
@@ -46,11 +43,8 @@ def start():
 
         dollar_exchange_rate = raw_input("Enter dollar exchange rate (toman): ")
 
-        calculate_price_list(wow_classic_orders, interest_rate, dollar_exchange_rate, 1)
-        print_list(wow_classic_orders)
-
-        #calculate_price_list(wow_norm_orders, interest_rate, dollar_exchange_rate, 1000000)
-        #print_list(wow_norm_orders)
+        calculate_price_list(wow_norm_orders, interest_rate, dollar_exchange_rate, 1000000)
+        print_list(wow_norm_orders)
 
     # end loop
 

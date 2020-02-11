@@ -1,7 +1,7 @@
 import urllib.request
 from abc import ABC
 from bs4 import BeautifulSoup as Bs
-from order_record import OrderRecord
+from calculate_price import OrderRecord
 
 
 class WowFetch(ABC):
@@ -27,8 +27,17 @@ class WowFetch(ABC):
     def get_realms_name(self):
         pass
 
+    def get_keyword(self):
+        return ""
+
+    def is_keyword_include(self):
+        pass
+
     def get_batch_size(self):
         pass
+
+    def should_process(self, realm: str):
+        return False
 
     def fetch_orders(self):
         soup = self.__fetch_realms_info()
@@ -43,7 +52,7 @@ class WowFetch(ABC):
             if realm_id.lower() == 'all':
                 continue
 
-            if realms_name[index] not in self.get_realms_name():
+            if not self.should_process(realms_name[index]):
                 continue
 
             print(realms_name[index] + ',', end='')
@@ -108,8 +117,7 @@ class WowFetch(ABC):
         opener = urllib.request.build_opener()
 
         # cookie to have currencies in dollar
-        opener.addheaders.append(
-            ('Cookie', 'g2g_regional=%7B%22currency%22%3A%22USD%22%2C%22language%22%3A%22en%22%7D'))
+        opener.addheaders.append(('Cookie', 'g2g_regional=%7B%22currency%22%3A%22USD%22%2C%22language%22%3A%22en%22%7D'))
         html = opener.open(realm_url)
         soup = Bs(html, features="html.parser")
 

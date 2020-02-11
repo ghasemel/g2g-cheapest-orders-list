@@ -1,3 +1,4 @@
+import decimal
 import operator
 
 
@@ -6,9 +7,9 @@ class OrderRecord:
 
     def __init__(self):
         self.realm_name = ""
-        self.server_price = 0
+        self.server_price = 0.0
         self.race = OrderRecord.RACES[0]
-        self.price_toman = 0
+        self.price_toman = 0.0
         self.is_my_account = False
         self.gold_stock = 0
 
@@ -20,13 +21,14 @@ class OrderRecord:
 
     def calculate_price_toman(self, interest_rate: int, g2g_fee, paypal_fee, withdraw_fee, dollar_exchange: int,
                               price_per: int):
+
         self.price_toman = \
-            ((self.server_price * 1000 *
+            ((self.server_price * price_per *
               (100 - g2g_fee) / 100 *
               (100 - paypal_fee) / 100 - withdraw_fee) *
              (100 - interest_rate) / 100 *
-             dollar_exchange / 1000
-             ) * price_per
+             dollar_exchange / price_per
+             )
 
         return self.price_toman
 
@@ -39,7 +41,7 @@ class OrderRecord:
                       self.race.ljust(small_width),
                       str(format(self.gold_stock, ",.0f")).ljust(medium_width),
                       str(format(self.server_price, ".6f")).ljust(medium_width),
-                      str(format(self.price_toman, ",.0f")).ljust(medium_width),
+                      str(format(self.price_toman, ",.3f")).ljust(medium_width),
                       ('*' if self.is_my_account else '').ljust(small_width)))
 
     @staticmethod

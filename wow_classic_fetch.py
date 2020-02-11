@@ -39,3 +39,18 @@ class WowClassicFetch(WowFetch):
 
     def get_realms_name(self):
         return WowClassicFetch.__WOW_REALM
+
+    def get_keyword(self):
+        return "Classic"
+
+    def is_keyword_include(self):
+        return True
+
+    def should_process(self, realm: str):
+        #return realm in WowClassicFetch.__WOW_REALM
+        return realm.find(self.get_keyword()) != -1
+
+
+
+
+
