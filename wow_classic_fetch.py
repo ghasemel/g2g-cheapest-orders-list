@@ -23,10 +23,10 @@ class WowClassicFetch(WowFetch):
     ]
 
     def get_servers_url(self):
-        return "https://www.g2g.com/wow-eu/gold-2522-19248"
+        return "https://www.g2g.com/wow-classic-eu/gold-27815-27817"
 
     def get_order_url(self):
-        return "https://www.g2g.com/wow-eu/gold-2522-19248?server={}&faction={}&sorting=price@asc"
+        return "https://www.g2g.com/wow-classic-eu/gold-27815-27817?server={}&faction={}&sorting=price@asc"
 
     def get_my_account(self):
         return "gigold"
