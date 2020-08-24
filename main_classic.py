@@ -14,11 +14,11 @@ WITHDRAW_FEE = 0.99
 def calculate_price_list(orders_list: list, interest_rate, dollar_exchange_rate, price_per):
     OrderRecord.calculate_orders_price(
         orders_list,
-        int(interest_rate),
+        float(interest_rate),
         G2G_FEE,
         PAYPAL_FEE,
         WITHDRAW_FEE,
-        int(dollar_exchange_rate),
+        float(dollar_exchange_rate),
         price_per
     )
     orders_list.sort()
@@ -44,7 +44,7 @@ def start():
         if interest_rate == '':
             continue
 
-        dollar_exchange_rate = raw_input("Enter dollar exchange rate (toman): ")
+        dollar_exchange_rate = raw_input("Enter dollar exchange rate (to destination currency): ")
 
         calculate_price_list(wow_classic_orders, interest_rate, dollar_exchange_rate, 1000)
         print_list(wow_classic_orders)

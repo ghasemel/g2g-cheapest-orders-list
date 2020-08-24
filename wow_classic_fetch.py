@@ -2,6 +2,7 @@ from wow_fetch import WowFetch
 
 
 class WowClassicFetch(WowFetch):
+    # we don't use this!
     __WOW_REALM = [        
         'Ashbringer [EU]',
         'Bloodfang [EU]',
@@ -29,7 +30,7 @@ class WowClassicFetch(WowFetch):
         return "https://www.g2g.com/wow-classic-eu/gold-27815-27817?server={}&faction={}&sorting=price@asc"
 
     def get_my_account(self):
-        return "gigold"
+        return "username"
 
     def get_alliance_id(self):
         return 33738

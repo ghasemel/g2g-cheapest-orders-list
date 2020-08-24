@@ -50,7 +50,7 @@ class OrderRecord:
               ";Race".ljust(small_width) +
               ";Gold Stock".ljust(medium_width) +
               ";Price($)".ljust(medium_width) +
-              ";Buy(Toman)".ljust(medium_width) +
+              ";Buy(D)".ljust(medium_width) +
               ";My".ljust(small_width))
 
     @staticmethod
