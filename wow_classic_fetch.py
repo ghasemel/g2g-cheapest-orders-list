@@ -2,24 +2,24 @@ from wow_fetch import WowFetch
 
 
 class WowClassicFetch(WowFetch):
-    __WOW_REALM = [
-        'Classic - Ashbringer',
-        'Classic - Bloodfang',
-        'Classic - Dragonfang',
-        'Classic - Dreadmist',
-        'Classic - Firemaw',
-        'Classic - Flamelash',
-        'Classic - Gandling',
-        'Classic - Gehennas',
-        'Classic - Golemagg',
-        'Classic - Judgement',
-        'Classic - Mograine',
-        'Classic - Noggenfogger',
-        'Classic - Razorgore',
-        'Classic - Shazzrah',
-        'Classic - Skullflame',
-        'Classic - Stonespine',
-        'Classic - Ten Storms'
+    __WOW_REALM = [        
+        'Ashbringer [EU]',
+        'Bloodfang [EU]',
+        'Dragonfang [EU]',
+        'Dreadmist [EU]',
+        'Firemaw [EU]',
+        'Flamelash [EU]',
+        'Gandling [EU]',
+        'Gehennas [EU]',
+        'Golemagg [EU]',
+        'Judgement [EU]',
+        'Mograine [EU]',
+        'Noggenfogger [EU]',
+        'Razorgore [EU]',
+        'Shazzrah [EU]',
+        'Skullflame [EU]',
+        'Stonespine [EU]',
+        'Ten Storms [EU]'
     ]
 
     def get_servers_url(self):
@@ -32,16 +32,16 @@ class WowClassicFetch(WowFetch):
         return "gigold"
 
     def get_alliance_id(self):
-        return 1086
+        return 33738
 
     def get_horde_id(self):
-        return 1087
+        return 33739
 
     def get_realms_name(self):
         return WowClassicFetch.__WOW_REALM
 
     def get_keyword(self):
-        return "Classic"
+        return "[EU]"
 
     def is_keyword_include(self):
         return True

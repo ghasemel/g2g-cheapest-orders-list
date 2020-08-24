@@ -14,6 +14,18 @@ class WowNormalFetch(WowClassicFetch):
         'Twisting Nether'
     ]
 
+    def get_servers_url(self):
+        return "https://www.g2g.com/wow-eu/gold-2522-19248"
+
+    def get_order_url(self):
+        return "https://www.g2g.com/wow-eu/gold-2522-19248?server={}&faction={}&sorting=price@asc"
+
+    def get_alliance_id(self):
+        return 1086
+
+    def get_horde_id(self):
+        return 1087
+
     def get_realms_name(self):
         return WowNormalFetch.__WOW_REALM
 

@@ -1,3 +1,4 @@
+import ssl
 import urllib.request
 from abc import ABC
 from bs4 import BeautifulSoup as Bs
@@ -42,6 +43,7 @@ class WowFetch(ABC):
     def fetch_orders(self):
         soup = self.__fetch_realms_info()
         realms_id, realms_name = self.__process_realms_info(soup)
+        #print(realms_name)
 
         races_ids = [self.get_alliance_id(), self.get_horde_id()]
 
@@ -75,12 +77,17 @@ class WowFetch(ABC):
     # end
 
     def __process_order_info(self, soup):
+        #print(soup)
+
         desired_index = -1
 
         gold_stock = 0
 
         # stock - total gold
         tag = soup.findAll("span", {"class": "products__statistic-amount"}, limit=WowFetch.MAX_FETCH)
+        #print('raouf')
+        #print(len(tag))
+
         for t in range(len(tag)):
             value = str(tag[t].text).strip().replace(" ", "").replace('Gold', '').strip().replace(',', '')
             gold_stock = float(value)
@@ -114,7 +121,10 @@ class WowFetch(ABC):
     def __fetch_order_info(self, realm_id, race_id):
         realm_url = self.get_order_url().format(realm_id, race_id)
 
-        opener = urllib.request.build_opener()
+        context=ssl._create_unverified_context()
+        sslHandler = urllib.request.HTTPSHandler(context=context)
+
+        opener = urllib.request.build_opener(sslHandler)
 
         # cookie to have currencies in dollar
         opener.addheaders.append(('Cookie', 'g2g_regional=%7B%22currency%22%3A%22USD%22%2C%22language%22%3A%22en%22%7D'))
@@ -130,7 +140,11 @@ class WowFetch(ABC):
         return realms_id, realms_name
 
     def __fetch_realms_info(self):
-        html = urllib.request.urlopen(self.get_servers_url())
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+
+        html = urllib.request.urlopen(self.get_servers_url(), context=ctx)
         soup = Bs(html, features="html.parser")
 
         return soup
