@@ -1,4 +1,4 @@
-# g2g cheapest orders based on realm and faction in your curreny (world of warcraft & world of warcraft classic)
+# fetch g2g cheapest orders based on realm and faction in your curreny (world of warcraft & world of warcraft classic)
 Are you a world of wacraft gold seller/buyer on g2g then using this script you are able to have your own sell/buy prices based on the cheapest orders on g2g in your desire currency plus your interest rate, you can also monitor if your orders are the cheapest one for the specific realm and faction!
 
 
