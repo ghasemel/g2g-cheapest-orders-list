@@ -1,4 +1,4 @@
-# fetch g2g cheapest orders
+# fetch g2g cheapest orders  [![CircleCI](https://circleci.com/gh/ghasemel/g2g-cheapest-orders-list.svg?style=svg)](https://circleci.com/gh/ghasemel/g2g-cheapest-orders-list)
 Are you a world of wacraft gold seller/buyer on g2g then using this script you are able to have your own sell/buy prices based on the cheapest orders on g2g in your desire currency plus your interest rate, you can also monitor if your orders are the cheapest one for the specific realm and faction!
 
 ## How to install & run
