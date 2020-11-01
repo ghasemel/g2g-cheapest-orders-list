@@ -3,7 +3,6 @@ from pip._vendor.distlib.compat import raw_input
 from calculate_price import OrderRecord
 
 # fees
-from wow_classic_fetch import WowClassicFetch
 from wow_normal_fetch import WowNormalFetch
 
 G2G_FEE = 8.99

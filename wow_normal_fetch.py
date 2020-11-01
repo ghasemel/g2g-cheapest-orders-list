@@ -3,15 +3,15 @@ from wow_classic_fetch import WowClassicFetch
 
 class WowNormalFetch(WowClassicFetch):
     __WOW_REALM = [
-        'Silvermoon',
-        'Argent Dawn',
-        'Dentarg',
-        'Draenor',
-        'Kazzak',
-        'Ragnaros',
-        'Ravencrest',
-        'Tarren Mill',
-        'Twisting Nether'
+        'Silvermoon [EU]',
+        'Argent Dawn [EU]',
+        'Dentarg [EU]',
+        'Draenor [EU]',
+        'Kazzak [EU]',
+        'Ragnaros [EU]',
+        'Ravencrest [EU]',
+        'Tarren Mill [EU]',
+        'Twisting Nether [EU]'
     ]
 
     def get_servers_url(self):

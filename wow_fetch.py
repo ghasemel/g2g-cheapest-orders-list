@@ -89,7 +89,7 @@ class WowFetch(ABC):
         #print(len(tag))
 
         for t in range(len(tag)):
-            value = str(tag[t].text).strip().replace(" ", "").replace('Gold', '').strip().replace(',', '')
+            value = str(tag[t].text).strip().replace(" ", "").replace('K', '').replace('Gold', '').strip().replace(',', '')
             gold_stock = float(value)
             if gold_stock >= WowFetch.MIN_GOLD_STOCK or t == WowFetch.MAX_FETCH - 1:
                 desired_index = t
@@ -104,7 +104,7 @@ class WowFetch(ABC):
             return 0
 
         tag = tag[desired_index]
-        value = str(tag.text).strip().replace(" ", "").replace('1Gold=', '').strip()
+        value = str(tag.text).strip().replace(" ", "").replace('K', '').replace('1Gold=', '').strip()
         cheapest_price = float(value.replace('US$', ''))
 
         # is seller my account
