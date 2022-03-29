@@ -13,7 +13,7 @@ Jinja2==2.11.2
 lazy-object-proxy==1.4.3
 MarkupSafe==1.1.1
 mccabe==0.6.1
-paramiko==2.7.2
+paramiko==2.10.1
 pipreqs==0.4.10
 pycparser==2.20
 pylint==2.6.0
